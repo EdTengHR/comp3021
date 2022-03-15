@@ -6,10 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Folder implements Comparable<Folder>{
+public class Folder implements Comparable<Folder>, java.io.Serializable {
 
 	private ArrayList<Note> notes;
 	private String name;
+	private static final long serialVersionUID = 1L;
 	
 	public Folder(String name) {
 		this.name = name;
