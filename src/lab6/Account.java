@@ -51,7 +51,7 @@ public class Account {
 	public static int getMaxAccountID(List<Account> accounts) {
 		// TODO: Task4 
 		// replace the null with a lambda expression
-		Account maxOne = accounts.stream().reduce(new Account(0, -100), (i, j) -> i.balance >= j.balance ? i : j);
+		Account maxOne = accounts.stream().reduce(new Account(0, -100), (i, j) -> (i.balance >= j.balance) ? i : j);
 
 		return maxOne.id;
 	}

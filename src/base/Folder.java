@@ -58,47 +58,71 @@ public class Folder implements Comparable<Folder>, java.io.Serializable {
 			}
 		}		
 		
-		// First handle ORs
-		for (Note n : notes) {
-			for (int j = 0; j < orLocations.size(); j ++) {
-				if (!(n.getTitle().toLowerCase().contains(tokens.get(orLocations.get(j)-1).toLowerCase()))
-						&& !(n.getTitle().toLowerCase().contains(tokens.get(orLocations.get(j)+1).toLowerCase()))) {
-					if (n instanceof TextNote) {
-						if (!(((TextNote) n).getContent().toLowerCase().contains(tokens.get(orLocations.get(j)-1).toLowerCase()))
-								&& !(((TextNote) n).getContent().toLowerCase().contains(tokens.get(orLocations.get(j)+1).toLowerCase()))) {
+		// No OR conditions, the string is all just ANDs
+		if (orLocations.size() == 0){
+			for (Note n : notes) {
+				for (int j = 0; j < tokens.size(); j++) {
+					if (!(n.getTitle().toLowerCase().contains(tokens.get(j).toLowerCase()))) {
+						if (n instanceof TextNote) {
+							if (!(((TextNote) n).getContent().toLowerCase().contains(tokens.get(j).toLowerCase()))) {
+								break;
+							}
+						}
+						else {
+							break;
+						}
+					} 
+					if (j == tokens.size() - 1) {
+						output.add(n);
+					}
+				}
+			}
+			
+			return output;
+		}
+		else {
+			// First handle ORs
+			for (Note n : notes) {
+				for (int j = 0; j < orLocations.size(); j ++) {
+					if (!(n.getTitle().toLowerCase().contains(tokens.get(orLocations.get(j)-1).toLowerCase()))
+							&& !(n.getTitle().toLowerCase().contains(tokens.get(orLocations.get(j)+1).toLowerCase()))) {
+						if (n instanceof TextNote) {
+							if (!(((TextNote) n).getContent().toLowerCase().contains(tokens.get(orLocations.get(j)-1).toLowerCase()))
+									&& !(((TextNote) n).getContent().toLowerCase().contains(tokens.get(orLocations.get(j)+1).toLowerCase()))) {
+								break;
+							}
+						}
+						else {
 							break;
 						}
 					}
-					else {
-						break;
+					if (j == orLocations.size() - 1) {
+						intermediate.add(n);
 					}
 				}
-				if (j == orLocations.size() - 1) {
-					intermediate.add(n);
-				}
 			}
-		}
-		
-		// Then handle required keywords (ANDs)
-		for (Note o : intermediate) {
-			for (int j = 0; j < requiredKeyIndex.size(); j++) {
-				if (!(o.getTitle().toLowerCase().contains(tokens.get(requiredKeyIndex.get(j))))) {
-					if (o instanceof TextNote) {
-						if (!(((TextNote) o).getContent().toLowerCase().contains(tokens.get(requiredKeyIndex.get(j)).toLowerCase()))) {
+			
+			// Then handle required keywords (ANDs)
+			for (Note o : intermediate) {
+				for (int j = 0; j < requiredKeyIndex.size(); j++) {
+					if (!(o.getTitle().toLowerCase().contains(tokens.get(requiredKeyIndex.get(j))))) {
+						if (o instanceof TextNote) {
+							if (!(((TextNote) o).getContent().toLowerCase().contains(tokens.get(requiredKeyIndex.get(j)).toLowerCase()))) {
+								break;
+							}
+						}
+						else {
 							break;
 						}
 					}
-					else {
-						break;
+					if (j == requiredKeyIndex.size() - 1) {
+						output.add(o);
 					}
 				}
-				if (j == requiredKeyIndex.size() - 1) {
-					output.add(o);
-				}
 			}
+			
+			return (output.isEmpty()) ? intermediate : output;
 		}
-		
-		return (output.isEmpty()) ? intermediate : output;
 	}
 	
 	@Override
