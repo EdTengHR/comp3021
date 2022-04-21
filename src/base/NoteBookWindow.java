@@ -504,16 +504,28 @@ public class NoteBookWindow extends Application {
 		        	});
 				}
 				else {
-					noteBook.deleteNote(currentFolder, currentNote);
-					updateListView(null);
-					Alert alert = new Alert(AlertType.CONFIRMATION);
-		        	alert.setTitle("Delete Successful");
-		        	alert.setContentText("Your note has been successfully deleted");
-		        	alert.showAndWait().ifPresent(rs -> {
-		        	    if (rs == ButtonType.OK) {
-		        	        System.out.println("Pressed OK.");
-		        	    }
-		        	});
+					if (noteBook.deleteNote(currentFolder, currentNote)) {
+						updateListView(null);
+						Alert alert = new Alert(AlertType.CONFIRMATION);
+			        	alert.setTitle("Delete Successful");
+			        	alert.setContentText("Your note has been successfully deleted");
+			        	alert.showAndWait().ifPresent(rs -> {
+			        	    if (rs == ButtonType.OK) {
+			        	        System.out.println("Pressed OK.");
+			        	    }
+			        	});
+					}
+					else {
+						Alert alert = new Alert(AlertType.ERROR);
+			        	alert.setTitle("Delete Unsuccessful");
+			        	alert.setContentText("Your note was not deleted");
+			        	alert.showAndWait().ifPresent(rs -> {
+			        	    if (rs == ButtonType.OK) {
+			        	        System.out.println("Pressed OK.");
+			        	    }
+			        	});
+					}
+					
 				}
 			}
 		});

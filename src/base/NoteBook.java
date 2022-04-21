@@ -68,13 +68,13 @@ public class NoteBook implements java.io.Serializable {
 		}
 	}
 	
-	public void deleteNote (String folderName, String title) {
+	public boolean deleteNote (String folderName, String title) {
 		for (Folder f : folders) {
 			if (f.getName().equals(folderName)) {
-				f.deleteNote(title);
-				break;
+				return f.deleteNote(title);
 			}
 		}
+		return false;
 	}
 	
 	public ArrayList<Folder> getFolders() {
