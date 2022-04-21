@@ -33,6 +33,15 @@ public class Folder implements Comparable<Folder>, java.io.Serializable {
 		Collections.sort(notes);
 	}
 	
+	public void deleteNote(String noteTitle) {
+		for (Note n : notes) {
+			if (n.getTitle().equals(noteTitle)) {
+				notes.remove(n);
+				break;
+			}
+		}
+	}
+	
 	public List<Note> searchNotes(String keywords) {
 		List<Note> intermediate = new ArrayList<Note>();
 		List<Note> output = new ArrayList<Note>();

@@ -54,6 +54,29 @@ public class NoteBook implements java.io.Serializable {
 		return insertNote(folderName, note);
 	}
 	
+	public void saveNote (String folderName, String title, String content) {
+		for (Folder f : this.folders) {
+			if (f.getName().equals(folderName)) {
+				for (Note n : f.getNotes()) {
+					if (n instanceof TextNote && n.getTitle().equals(title)) {
+						((TextNote) n).setContent(content);
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+	
+	public void deleteNote (String folderName, String title) {
+		for (Folder f : folders) {
+			if (f.getName().equals(folderName)) {
+				f.deleteNote(title);
+				break;
+			}
+		}
+	}
+	
 	public ArrayList<Folder> getFolders() {
 		return folders;
 	}
@@ -131,5 +154,10 @@ public class NoteBook implements java.io.Serializable {
 		}
 		
 		return true;
+	}
+
+	public void addFolder(String folderName) {
+		Folder f = new Folder(folderName);
+		folders.add(f);
 	}
 }

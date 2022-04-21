@@ -38,6 +38,10 @@ public class TextNote extends Note {
 		return this.content;
 	}
 	
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
 	/**
 	 * get the content of a file
 	 * 
