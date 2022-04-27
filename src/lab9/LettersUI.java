@@ -1,9 +1,6 @@
 package lab9;
 
 import java.util.Random;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -19,8 +16,6 @@ public class LettersUI extends Application {
 	final static int SCENE_WIDTH = 300;
 	final static int SCENE_HEIGHT = 150;
 	
-	private static Lock lock = new ReentrantLock();
-	private static Condition textDisplayed= lock.newCondition();
 	private boolean textShown = false;
 
 	public static void main(String[] args) {
@@ -76,7 +71,7 @@ public class LettersUI extends Application {
 					ie.printStackTrace();
 				}
 			}
-			System.out.println("displaying text");
+			
 			text.setVisible(true);
 			textShown = true;
 		}
@@ -84,7 +79,6 @@ public class LettersUI extends Application {
 			text.setVisible(false);
 			textShown = false;
 			notify();
-			System.out.println("notified");
 		}
 	}
 	
