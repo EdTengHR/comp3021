@@ -33,8 +33,10 @@ public class RacyCounter {
 		public void run(){
 			for (int i = 0; i < ITERATIONS; i++) {
 				//add synchronization here
-				int temp = counter;
-				counter = temp +1;
+				synchronized (MyTask.class) {
+					int temp = counter;
+					counter = temp +1;
+				}
 			}
 		}
 	}

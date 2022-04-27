@@ -1,6 +1,9 @@
 package lab9;
 
 import java.util.Random;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -15,6 +18,10 @@ public class LettersUI extends Application {
 
 	final static int SCENE_WIDTH = 300;
 	final static int SCENE_HEIGHT = 150;
+	
+	private static Lock lock = new ReentrantLock();
+	private static Condition textDisplayed= lock.newCondition();
+	private boolean textShown = false;
 
 	public static void main(String[] args) {
 		launch(LettersUI.class, args);
@@ -26,7 +33,7 @@ public class LettersUI extends Application {
 		hbox.setPadding(new Insets(15, 12, 15, 12));
 		hbox.setSpacing(10); // Gap between nodes
 
-		String[] string_thread = { "A", "B", "C" };
+		String[] string_thread = { "A", "B", "C", "D", "E" };
 		for (String s : string_thread) {
 			Text text = new Text(s);
 			text.setFont(new Font(50));
@@ -43,22 +50,44 @@ public class LettersUI extends Application {
 		Thread t1 = new Thread(new MyTask((Text) hbox.getChildren().get(0), this));
 		Thread t2 = new Thread(new MyTask((Text) hbox.getChildren().get(1), this));
 		Thread t3 = new Thread(new MyTask((Text) hbox.getChildren().get(2), this));
+		Thread t4 = new Thread(new MyTask((Text) hbox.getChildren().get(3), this));
+		Thread t5 = new Thread(new MyTask((Text) hbox.getChildren().get(4), this));
 		t1.setDaemon(true);
 		t2.setDaemon(true);
 		t3.setDaemon(true);
+		t4.setDaemon(true);
+		t5.setDaemon(true);
 		t1.start();
 		t2.start();
 		t3.start();
+		t4.start();
+		t5.start();
 	}
 
-	public void showText(Text text, boolean show) {
+	public synchronized void showText(Text text, boolean show) {
 		// the parameter show tells if the text has to appear o disappear
+		
 		if (show) {
+			while (textShown) {
+				try {
+					wait();
+				}
+				catch (InterruptedException ie) {
+					ie.printStackTrace();
+				}
+			}
+			System.out.println("displaying text");
 			text.setVisible(true);
-		} else {
+			textShown = true;
+		}
+		else {
 			text.setVisible(false);
+			textShown = false;
+			notify();
+			System.out.println("notified");
 		}
 	}
+	
 	class MyTask implements Runnable {
 
 		int timeBudgetms = 5 * 60 * 1000;
